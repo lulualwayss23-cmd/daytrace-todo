@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Morandi Todo - 简洁舒适的个人计划与习惯管理工具"
+    />
+    <title>Morandi Todo</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="site-header">
+        <a class="brand" href="#" aria-label="Morandi Todo 首页">
+          <span class="brand-mark" aria-hidden="true">
+            <span></span><span></span><span></span><span></span>
+          </span>
+          <span class="brand-copy">
+            <strong>Morandi Todo</strong>
+            <small>把今天过得清楚一点</small>
+          </span>
+        </a>
+
+        <div class="header-actions">
+          <nav class="page-tabs" aria-label="主要页面">
+            <button class="tab-button active" data-page="plans" type="button">
+              日计划
+            </button>
+            <button class="tab-button" data-page="habits" type="button">
+              习惯养成
+            </button>
+            <button class="tab-button" data-page="stats" type="button">
+              统计
+            </button>
+          </nav>
+          <button class="settings-button" id="open-settings" type="button" aria-label="数据设置">⋯</button>
+        </div>
+      </header>
+
+      <main>
+        <section class="page active" id="plans-page" aria-labelledby="plans-title">
+          <div class="page-heading">
+            <div>
+              <p class="eyebrow" id="today-label">今天</p>
+              <h1 id="plans-title">把今天过得清楚一点</h1>
+              <p class="page-description">从一件小事开始，慢慢完成今日计划。</p>
+            </div>
+            <button class="primary-button" id="open-task-form" type="button">
+              <span aria-hidden="true">＋</span>
+              添加计划
+            </button>
+          </div>
+
+          <div class="overview-grid" aria-label="今日概览">
+            <article class="overview-card">
+              <span class="overview-label">今日进度</span>
+              <strong id="today-progress-text">0 / 0</strong>
+              <div class="progress-track" id="today-progress-track" aria-label="今日任务完成 0%">
+                <span></span>
+              </div>
+            </article>
+            <article class="overview-card">
+              <span class="overview-label">专注时间</span>
+              <strong><span id="focus-time">0</span> <small>分钟</small></strong>
+              <p id="timer-status">还没有开始计时</p>
+            </article>
+            <article class="overview-card quote-card">
+              <span class="overview-label">今日一句</span>
+              <p>不必急着抵达，先照顾好此刻的节奏。</p>
+            </article>
+          </div>
+
+          <div class="section-heading task-section-heading">
+            <div class="task-heading-copy">
+              <h2 id="task-list-title">今日任务</h2>
+              <span id="task-summary">暂无任务</span>
+            </div>
+            <div class="task-heading-actions">
+              <div class="date-navigator" aria-label="切换任务日期">
+                <button id="previous-task-date" type="button" aria-label="查看前一天">‹</button>
+                <button id="return-today" type="button" title="回到今天">今天</button>
+                <button id="next-task-date" type="button" aria-label="查看后一天" disabled>›</button>
+              </div>
+              <button class="text-button" id="open-history" type="button">全部记录</button>
+            </div>
+          </div>
+
+          <div class="task-list" id="task-list" aria-live="polite"></div>
+
+          <div class="empty-state" id="task-empty-state">
+            <button
+              class="empty-icon"
+              id="empty-icon-add-task"
+              type="button"
+              aria-label="添加第一项计划"
+              title="添加计划"
+            >＋</button>
+            <h3 id="task-empty-title">今天还没有计划</h3>
+            <p id="task-empty-description">先添加一件想完成的小事吧。</p>
+            <button class="secondary-button" id="empty-add-task" type="button">添加第一项计划</button>
+          </div>
+        </section>
+
+        <section class="page" id="habits-page" aria-labelledby="habits-title" hidden>
+          <div class="page-heading">
+            <div>
+              <p class="eyebrow">持续发生的小事</p>
+              <h1 id="habits-title">让习惯慢慢长出来</h1>
+              <p class="page-description">记录每一次行动，而不只关注连续天数。</p>
+            </div>
+            <button class="primary-button habit-button" id="open-habit-form" type="button">
+              <span aria-hidden="true">＋</span>
+              添加习惯
+            </button>
+          </div>
+
+          <div class="habit-summary">
+            <div>
+              <span>今日完成</span>
+              <strong id="habit-today-summary">0 / 0</strong>
+            </div>
+            <div>
+              <span>最长连续</span>
+              <strong><span id="habit-longest-streak">0</span> <small>天</small></strong>
+            </div>
+            <div>
+              <span>本周完成率</span>
+              <strong id="habit-week-rate">0%</strong>
+            </div>
+          </div>
+
+          <div class="section-heading habit-section-heading">
+            <div>
+              <h2>我的习惯</h2>
+              <span>今天也向前一点</span>
+            </div>
+            <div class="view-switch" aria-label="统计周期">
+              <button class="active" data-habit-view="week" type="button">周</button>
+              <button data-habit-view="month" type="button">月</button>
+              <button data-habit-view="year" type="button">年</button>
+            </div>
+          </div>
+
+          <div class="habit-grid" id="habit-grid" aria-live="polite"></div>
+
+          <div class="empty-state" id="habit-empty-state">
+            <button
+              class="empty-icon habit-empty-icon"
+              id="empty-icon-add-habit"
+              type="button"
+              aria-label="添加第一个习惯"
+              title="添加习惯"
+            >＋</button>
+            <h3>还没有习惯项目</h3>
+            <p>从一个每天愿意做的小目标开始。</p>
+            <button class="secondary-button" id="empty-add-habit" type="button">添加第一个习惯</button>
+          </div>
+        </section>
+
+        <section class="page" id="stats-page" aria-labelledby="stats-title" hidden>
+          <div class="page-heading stats-heading">
+            <div>
+              <p class="eyebrow">成长记录</p>
+              <h1 id="stats-title">看见时间留下的痕迹</h1>
+              <p class="page-description">不追求完美，只记录每一次清楚的前进。</p>
+            </div>
+            <button class="primary-button report-button" id="generate-weekly-report" type="button">
+              生成本周总结
+            </button>
+          </div>
+
+          <div class="stats-grid">
+            <article class="stat-card">
+              <span>今日完成任务</span>
+              <strong id="stats-today-tasks">0</strong>
+              <small>项</small>
+            </article>
+            <article class="stat-card">
+              <span>今日专注时间</span>
+              <strong id="stats-today-focus">0</strong>
+              <small>分钟</small>
+            </article>
+            <article class="stat-card">
+              <span>今日完成习惯</span>
+              <strong id="stats-today-habits">0</strong>
+              <small>个</small>
+            </article>
+            <article class="stat-card">
+              <span>本周累计专注</span>
+              <strong id="stats-week-focus">0</strong>
+              <small>分钟</small>
+            </article>
+            <article class="stat-card">
+              <span>本月累计专注</span>
+              <strong id="stats-month-focus">0</strong>
+              <small>分钟</small>
+            </article>
+            <article class="stat-card highlight-stat">
+              <span>当前最佳连续习惯</span>
+              <strong id="stats-best-habit">暂无</strong>
+              <small id="stats-best-streak">开始第一个习惯吧</small>
+            </article>
+          </div>
+
+          <div class="growth-note">
+            <span aria-hidden="true">✓</span>
+            <p id="stats-growth-note">今天的每一点投入，都会成为之后看得见的成长。</p>
+          </div>
+        </section>
+      </main>
+
+      <footer>
+        <p>今天的进度，也值得被温柔记录。</p>
+      </footer>
+    </div>
+
+    <dialog class="app-dialog" id="task-dialog">
+      <form class="dialog-card" id="task-form">
+        <div class="dialog-heading">
+          <div>
+            <p class="eyebrow">新的开始</p>
+            <h2 id="task-dialog-title">添加日计划</h2>
+          </div>
+          <button class="icon-button close-dialog" type="button" aria-label="关闭">×</button>
+        </div>
+
+        <label class="form-field">
+          <span>计划名称</span>
+          <input
+            id="task-title"
+            name="title"
+            type="text"
+            maxlength="50"
+            placeholder="例如：阅读 30 分钟"
+            autocomplete="off"
+            required
+          />
+        </label>
+
+        <fieldset class="form-field">
+          <legend>计时模式</legend>
+          <div class="mode-options">
+            <label>
+              <input type="radio" name="mode" value="count-up" checked />
+              <span>正向计时</span>
+            </label>
+            <label>
+              <input type="radio" name="mode" value="countdown" />
+              <span>倒计时</span>
+            </label>
+            <label>
+              <input type="radio" name="mode" value="no-timer" />
+              <span>不计时</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <label class="form-field countdown-field" id="countdown-field" hidden>
+          <span>倒计时时长</span>
+          <span class="number-input">
+            <input id="countdown-minutes" name="minutes" type="number" min="1" max="720" value="25" />
+            <span>分钟</span>
+          </span>
+        </label>
+
+        <label class="form-field">
+          <span>关联习惯（可选）</span>
+          <select id="task-habit-link" name="linkedHabitId">
+            <option value="">不关联习惯</option>
+          </select>
+          <small class="field-hint" id="habit-link-hint">仅时长目标习惯可接收计时分钟。</small>
+        </label>
+
+        <label class="sound-option">
+          <input id="task-tick-sound" name="tickSound" type="checkbox" checked />
+          <span>
+            <strong>滴答时钟声</strong>
+            <small>计时运行时播放轻柔的时钟白噪音</small>
+          </span>
+        </label>
+
+        <div class="dialog-actions">
+          <button class="secondary-button close-dialog" type="button">取消</button>
+          <button class="primary-button" id="task-submit-button" type="submit">确认</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="app-dialog history-dialog" id="history-dialog">
+      <div class="dialog-card">
+        <div class="dialog-heading">
+          <div>
+            <p class="eyebrow">过去的记录</p>
+            <h2>计划历史</h2>
+          </div>
+          <button class="icon-button close-history" type="button" aria-label="关闭">×</button>
+        </div>
+        <div class="history-list" id="history-list"></div>
+      </div>
+    </dialog>
+
+    <dialog class="app-dialog" id="habit-dialog">
+      <form class="dialog-card" id="habit-form">
+        <div class="dialog-heading">
+          <div>
+            <p class="eyebrow">每天一点点</p>
+            <h2 id="habit-dialog-title">添加习惯</h2>
+          </div>
+          <button class="icon-button close-habit-dialog" type="button" aria-label="关闭">×</button>
+        </div>
+
+        <label class="form-field">
+          <span>习惯名称</span>
+          <input
+            id="habit-name"
+            name="name"
+            type="text"
+            maxlength="30"
+            placeholder="例如：阅读"
+            autocomplete="off"
+            required
+          />
+        </label>
+
+        <fieldset class="form-field">
+          <legend>目标类型</legend>
+          <div class="mode-options habit-type-options">
+            <label>
+              <input type="radio" name="goalType" value="count" />
+              <span>次数目标</span>
+            </label>
+            <label>
+              <input type="radio" name="goalType" value="duration" checked />
+              <span>时长目标</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <label class="form-field">
+          <span id="habit-target-label">每日目标时间</span>
+          <span class="number-input">
+            <input id="habit-target" name="target" type="number" min="1" max="999" value="30" />
+            <span id="habit-target-unit">分钟</span>
+          </span>
+        </label>
+
+        <fieldset class="form-field">
+          <legend>标记颜色</legend>
+          <div class="color-options">
+            <label><input type="radio" name="color" value="blue" checked /><span class="blue">蓝</span></label>
+            <label><input type="radio" name="color" value="green" /><span class="green">绿</span></label>
+            <label><input type="radio" name="color" value="red" /><span class="red">红</span></label>
+            <label><input type="radio" name="color" value="yellow" /><span class="yellow">黄</span></label>
+          </div>
+        </fieldset>
+
+        <p class="form-note">默认每天 30 分钟。时长目标可手动每次增加 5 分钟。</p>
+
+        <div class="dialog-actions">
+          <button class="secondary-button close-habit-dialog" type="button">取消</button>
+          <button class="primary-button habit-button" id="habit-submit-button" type="submit">添加习惯</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="app-dialog checkin-dialog" id="checkin-dialog">
+      <form class="dialog-card checkin-card" id="checkin-form">
+        <button class="icon-button close-checkin-dialog" type="button" aria-label="关闭">×</button>
+        <div class="checkin-success" aria-hidden="true">
+          <span>✓</span>
+        </div>
+        <p class="eyebrow">今日打卡</p>
+        <h2 id="checkin-title">今日已完成</h2>
+        <p class="checkin-habit-name" id="checkin-habit-name"></p>
+
+        <label class="form-field checkin-time-field">
+          <span>今日投入时间</span>
+          <span class="number-input">
+            <input
+              id="checkin-minutes"
+              name="minutes"
+              type="number"
+              min="0"
+              max="1440"
+              value="0"
+              inputmode="numeric"
+            />
+            <span>分钟</span>
+          </span>
+        </label>
+
+        <div class="dialog-actions checkin-actions">
+          <button class="secondary-button close-checkin-dialog" type="button">稍后填写</button>
+          <button class="primary-button" id="checkin-submit-button" type="submit">确认</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="app-dialog settings-dialog" id="settings-dialog">
+      <div class="dialog-card">
+        <div class="dialog-heading">
+          <div>
+            <p class="eyebrow">数据管理</p>
+            <h2>设置与备份</h2>
+          </div>
+          <button class="icon-button close-settings" type="button" aria-label="关闭">×</button>
+        </div>
+
+        <div class="settings-list">
+          <section class="settings-item">
+            <div>
+              <strong>导出备份</strong>
+              <p>下载包含全部计划、计时和习惯记录的 JSON 文件。</p>
+            </div>
+            <button class="secondary-button" id="export-data" type="button">导出</button>
+          </section>
+          <section class="settings-item">
+            <div>
+              <strong>导入备份</strong>
+              <p>导入 Morandi Todo 备份，并替换当前浏览器中的数据。</p>
+            </div>
+            <button class="secondary-button" id="import-data" type="button">选择文件</button>
+            <input id="import-file" type="file" accept=".json,application/json" hidden />
+          </section>
+        </div>
+        <p class="form-note settings-note">建议定期导出备份。数据默认只保存在当前浏览器中。</p>
+      </div>
+    </dialog>
+
+    <dialog class="app-dialog report-dialog" id="report-dialog">
+      <div class="dialog-card">
+        <div class="dialog-heading">
+          <div>
+            <p class="eyebrow">成长记录</p>
+            <h2>本周总结</h2>
+          </div>
+          <button class="icon-button close-report" type="button" aria-label="关闭">×</button>
+        </div>
+        <div class="report-content" id="weekly-report-text"></div>
+        <div class="dialog-actions">
+          <button class="secondary-button close-report" type="button">关闭</button>
+          <button class="primary-button" id="copy-weekly-report" type="button">复制文本</button>
+        </div>
+      </div>
+    </dialog>
+
+    <div class="toast" role="status" aria-live="polite">操作成功</div>
+    <script src="script.js"></script>
+  </body>
+</html>
